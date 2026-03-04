@@ -1,17 +1,13 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import predict  # This now contains our "Manual Build" logic
-
+import predict 
 st.set_page_config(page_title="Health Predictor", layout="wide")
-st.title("🛡️ HEALTH PREDICTOR SYSTEM")
+st.title("HEALTH PREDICTOR SYSTEM")
 
-# --- REMOVED THE OLD LOAD_MODEL_ONCE ---
-# We now use the 'my_model' that is already built inside predict.py
+st.sidebar.header("Patient Input")
 
-st.sidebar.header("📋 Patient Input")
 
-# 1. Inputs (Keeping your exact logic)
 age = st.sidebar.number_input("Age", 18, 100, 25)
 bmi = st.sidebar.slider("BMI", 10.0, 50.0, 22.5)
 s_bp = st.sidebar.number_input("Systolic Blood Pressure", 80 , 200, 120)
@@ -27,7 +23,7 @@ db_hist = int(st.sidebar.toggle("Family History of Diabetes"))
 hd_hist = int(st.sidebar.toggle("Family History of Heart Disease"))
 ob_hist = int(st.sidebar.toggle("Family History of Obesity"))
 
-# 2. Create the DataFrame (Matching the keys in predict.py)
+
 raw_data = {
     'age': age,
     'gender': gender,
@@ -44,21 +40,21 @@ raw_data = {
 }
 df = pd.DataFrame([raw_data])
 
-# 3. Execution Logic
+
 if st.button("Analyze Health Risks", type="primary"):
     with st.spinner("Analyzing data..."):
-        # We call the new function from predict.py that handles 
-        # both transformation AND the manual model prediction
+        
         results = predict.make_predictions(df)
         
         st.divider()
-        st.subheader("📊 Diagnostic Report")
+        st.subheader("Diagnostic Report")
         
         col1, col2, col3 = st.columns(3)
         
-        # Displaying the results returned from predict.py
+        
         col1.metric(label="Diabetes Risk", value=results["diabetes"])
         col2.metric(label="Heart Disease Risk", value=results["heart"])
         col3.metric(label="Obesity Risk", value=results["obesity"])
         
+
         st.info("Note: This is an AI-generated screening tool and not a clinical diagnosis.")
